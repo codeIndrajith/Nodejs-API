@@ -4,6 +4,7 @@ const logger = require('./middleware/logger')
 const morgan = require('morgan')
 const connectDB = require('./config/db')
 const colors = require('colors')
+const errorHandler = require('./middleware/error')
 
 // load to env variables
 dotenv.config({ path: './config/config.env' })
@@ -16,6 +17,7 @@ const app = express();
 
 // Body parser
 app.use(express.json())
+
 // Dev logging middleware
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
@@ -27,5 +29,7 @@ const routerFile = require('./routes/routes')
 
 // Mount routes
 app.use('/api/v1/dev' , routerFile)
+// this after this set important
+app.use(errorHandler);
 
 app.listen(PORT , console.log(`Server running on ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold))

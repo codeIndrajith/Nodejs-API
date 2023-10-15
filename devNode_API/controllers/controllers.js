@@ -1,3 +1,5 @@
+const ErrorResponse = require('../utils/errorResponse')
+
 const Bootcamp = require('../models/Bootcamp');
 
 // @desc    Get all controllers
@@ -10,7 +12,9 @@ exports.getControllers = async ( req , res , next) => {
         res.status(200).json({ success : true , count : bootcamp.length , data : bootcamp })
     } catch(err) {
         res.status(400).json({success : false})
+       
     }
+    
 };
 
 // @desc    Get all controllers
@@ -21,13 +25,14 @@ exports.getControllerId = async ( req , res , next) => {
     try {
         const bootcamp = await Bootcamp.findById(req.params.id);
         if(!bootcamp) {
-            res.status(400).json({success : false , msg : "Data is not in database"})
+           return  next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
         }else {
             res.status(200).json({ success : true , data : bootcamp })
         }
         
     } catch(err) {
-        res.status(400).json({success : false})
+        // res.status(400).json({success : false})
+        next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
     }
 };
 
