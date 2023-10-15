@@ -1,5 +1,5 @@
 const express = require('express')
-const { getControllers , getController , createController , updateController , deleteController} = require('../controllers/controllers')
+const { getControllers , getController , getControllerId , createController , updateController , deleteController} = require('../controllers/controllers')
 const router = express.Router()
 
 router.route('/')
@@ -7,6 +7,7 @@ router.route('/')
     .post(getController)
 
 router.route('/:id')
+    .get(getControllerId)
     .post(createController)
     .put(updateController)
     .delete(deleteController)
