@@ -1,28 +1,25 @@
 const ErrorResponse = require('../utils/errorResponse')
-
+const asyncHandler = require('../middleware/async')
 const Bootcamp = require('../models/Bootcamp');
 
 // @desc    Get all controllers
 // @route   Get /api/v1/controllers
 // @access  Public
 
-exports.getControllers = async ( req , res , next) => {
-    try {
+exports.getControllers = asyncHandler(async( req , res , next) => {
+    
         const bootcamp = await Bootcamp.find();
         res.status(200).json({ success : true , count : bootcamp.length , data : bootcamp })
-    } catch(err) {
-        res.status(400).json({success : false})
-       
-    }
     
-};
+    
+});
 
 // @desc    Get all controllers
 // @route   Get /api/v1/controllers/:id
 // @access  Public
 
-exports.getControllerId = async ( req , res , next) => {
-    try {
+exports.getControllerId = asyncHandler(async ( req , res , next) => {
+    
         const bootcamp = await Bootcamp.findById(req.params.id);
         if(!bootcamp) {
            return  next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
@@ -30,33 +27,28 @@ exports.getControllerId = async ( req , res , next) => {
             res.status(200).json({ success : true , data : bootcamp })
         }
         
-    } catch(err) {
-        // res.status(400).json({success : false})
-        next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
-    }
-};
+    
+});
 
 // @desc    POST data
 // @route   POST /api/v1/controller/
 // @access  Public
 
-exports.getController = async ( req , res , next) => {
+exports.getController = asyncHandler(async ( req , res , next) => {
     // console.log(req.body)
     // res.status(200).json({ success : true , msg : "Post request" })
 
 
     // send the data another way
-    try {
+    
         const bootcamp = await Bootcamp.create(req.body);
 
         res.status(201).json({
         success : true,
         data : bootcamp
     })
-    } catch (err) {
-        res.status(400).json({success : false})
-    }
-}
+    
+});
 
 // @desc    create new controllers
 // @route   POST /api/v1/controllers
@@ -70,38 +62,33 @@ exports.createController = ( req , res , next) => {
 // @route   PUT /api/v1/controllers/:id
 // @access  Private
 
-exports.updateController = async ( req , res , next) => {
-    try {
+exports.updateController = asyncHandler(async ( req , res , next) => {
+    
         const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id , req.body , {
             new : true,
             runValidators : true
         });
     
         if(!bootcamp) {
-            res.status(400).json({success : false})
+            return  next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
         }
         res.status(200).json({ success : true , data : bootcamp})
-    } catch (err) {
-        res.status(400).json({success : false , msg : "update unsuccessfully"})
-    }
-}
+   
+})
 
 // @desc    delete controllers
 // @route   DELETE /api/v1/controllers/:id
 // @access  Private
 
-exports.deleteController = async ( req , res , next) => {
+exports.deleteController = asyncHandler(async ( req , res , next) => {
 
-    try {
+   
         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
     
         if(!bootcamp) {
-            res.status(400).json({success : false})
+            return  next(new ErrorResponse(`Bootcamp not found with id of ${req.param.id}` , 400));
         }
         res.status(200).json({ success : true , data : {}})
-    } catch (err) {
-        res.status(400).json({success : false , msg : "Delete unsuccessfully"})
-    }
-}
+})
 
 
